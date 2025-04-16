@@ -10,7 +10,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #07001b;
+    background-color: #ffffff;
 }
 
 .text {
@@ -19,7 +19,7 @@ body {
 }
 
 main {
-    background-color: rgb(20, 0, 53);
+    background-color:#332d6f;
     width: 60vw;
     min-height: 100vh;
     color: white;
@@ -42,11 +42,11 @@ header {
 .logo {
     font-size: 2rem;
     font-weight: bold;
-    color: #fff;
+    color: lch(100% 0.01 296.81);
 }
 
 .logo span {
-    color: #4ae;
+    color: #A1A9FE;
 }
 
 .nav-buttons {
@@ -65,20 +65,19 @@ header {
 
 .btn-outline {
     background-color: transparent;
-    border: 2px solid rgb(95, 20, 113);
-    color: rgb(48, 18, 183);
+    color: rgb(248, 248, 248);
 }
 
 .btn-outline:hover {
-    background-color: rgb(79, 31, 210);
+    background-color: #7578d7;
 }
 
 .btn-primary {
-    background-color: rgb(159, 52, 212);
+    background-color: #7578d7;
 }
 
 .btn-primary:hover {
-    background-color: rgb(159, 52, 212);
+    background-color: #7578d7;
     transform: translateY(-2px);
 }
 
@@ -145,7 +144,7 @@ header {
 }
 
 .testimonial {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(106, 84, 204, 0.379);
     padding: 1.5rem;
     border-radius: 8px;
     margin-bottom: 1rem;
@@ -178,3 +177,4 @@ footer {
         grid-template-columns: 1fr;
     }
 }
+
