@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - DebtMate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .text {
+            font-size: 16px;
+            font-family: Helvetica;
+        }
+
+        main {
+            background-color:#332d6f;
+            width: 60vw;
+            min-height: 100vh;
+            color: white;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .logo span {
+            color: #4ae;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .notifications {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 10px;
+            height: 10px;
+            background-color: #ff5252;
+            border-radius: 50%;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #7578d7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .content-area {
+            display: flex;
+            flex: 1;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 1rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a.active {
+            background-color: #7578d7;
+            color: navy;
+            font-weight: bold;
+        }
+
+        .main-content {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #7578d7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .profile-info h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-info p {
+            opacity: 0.8;
+        }
+
+        .section-title {
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .summary-boxes {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-box {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .summary-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-box p {
+            opacity: 0.8;
+        }
+
+        .positive {
+            color: rgb(56, 212, 93);
+        }
+
+        .negative {
+            color: #d31d1d;
+        }
+
+        .recent-transactions {
+            margin-bottom: 2rem;
+        }
+
+        .transaction {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .transaction:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .transaction-right {
+            text-align: right;
+        }
+
+        .btn {
+            padding: 0.6rem 1.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            background-color: #7578d7;
+            color: #4ae;
+        }
+
+        .btn-outline:hover {
+            background-color: #7578d7;
+            color: navy;
+        }
+
+        .btn-primary {
+            background-color: #7578d7;
+            color: navy;
+        }
+
+        .btn-primary:hover {
+            background-color: #7578d7;
+            transform: translateY(-2px);
+        }
+
+        .friends-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .friend {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .friend-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #7578d7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .friend-info h4 {
+            margin-bottom: 0.2rem;
+        }
+
+        .friend-info p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            margin-top: auto;
+            width: 100%;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            main {
+                width: 90vw;
+                padding: 1rem;
+            }
+            
+            .content-area {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+            
+            .nav-links {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .nav-links li {
+                margin-bottom: 0;
+            }
+            
+            .summary-boxes {
+                grid-template-columns: 1fr;
+            }
+            
+            .friends-list {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .friends-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <header>
+            <div class="logo">Owe<span>Me</span></div>
+            <div class="header-actions">
+                <div class="notifications">
+                    �bells
+                    <div class="notification-dot"></div>
+                </div>
+                <div class="avatar">JD</div>
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="sidebar">
+                <ul class="nav-links">
+                    <li><a href="#" class="active">📊 Dashboard</a></li>
+                    <li><a href="#">👥 Friends</a></li>
+                    <li><a href="#">🏘️ Groups</a></li>
+                    <li><a href="#">💰 Expenses</a></li>
+                    <li><a href="#">💳 Settlements</a></li>
+                    <li><a href="#">⚙️ Settings</a></li>
+                    <li><a href="#">📤 Log Out</a></li>
+                </ul>
+            </div>
+
+            <div class="main-content">
+                <div class="profile-header">
+                    <div class="profile-avatar">JD</div>
+                    <div class="profile-info">
+                        <h2>John</h2>
+                        <p>john@gmail.com</p>
+                    </div>
+                </div>
+
+                <h3 class="section-title">Summary</h3>
+                <div class="summary-boxes">
+                    <div class="summary-box">
+                        <h3 class="positive">$127.50</h3>
+                        <p>You are owed</p>
+                    </div>
+                    <div class="summary-box">
+                        <h3 class="negative">$42.75</h3>
+                        <p>You owe</p>
+                    </div>
+                    <div class="summary-box">
+                        <h3 class="positive">$84.75</h3>
+                        <p>Net balance</p>
+                    </div>
+                </div>
+
+                <div class="recent-transactions">
+                    <h3 class="section-title">Recent Transactions</h3>
+                    <div class="transaction">
+                        <div class="transaction-left">
+                            <div class="transaction-icon">🍕</div>
+                            <div>
+                                <h4>Pizza Night</h4>
+                                <p>Group: Roommates</p>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <h4 class="positive">+$15.00</h4>
+                            <p>Apr 12, 2025</p>
+                        </div>
+                    </div>
+                    <div class="transaction">
+                        <div class="transaction-left">
+                            <div class="transaction-icon">🎟️</div>
+                            <div>
+                                <h4>Concert Tickets</h4>
+                                <p>With: Sarah</p>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <h4 class="negative">-$42.75</h4>
+                            <p>Apr 8, 2025</p>
+                        </div>
+                    </div>
+                    <div class="transaction">
+                        <div class="transaction-left">
+                            <div class="transaction-icon">🛒</div>
+                            <div>
+                                <h4>Groceries</h4>
+                                <p>Group: Roommates</p>
+                            </div>
+                        </div>
+                        <div class="transaction-right">
+                            <h4 class="positive">+$32.50</h4>
+                            <p>Apr 5, 2025</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="friends-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3 class="section-title">Friends</h3>
+                        <button class="btn btn-outline">Add Friend</button>
+                    </div>
+                    <div class="friends-list">
+                        <div class="friend">
+                            <div class="friend-avatar">ST</div>
+                            <div class="friend-info">
+                                <h4>Sarah</h4>
+                                <p class="negative">You owe $42.75</p>
+                            </div>
+                        </div>
+                        <div class="friend">
+                            <div class="friend-avatar">MM</div>
+                            <div class="friend-info">
+                                <h4>Mike</h4>
+                                <p class="positive">Owes you $55.20</p>
+                            </div>
+                        </div>
+                        <div class="friend">
+                            <div class="friend-avatar">AJ</div>
+                            <div class="friend-info">
+                                <h4>Alex</h4>
+                                <p class="positive">Owes you $72.30</p>
+                            </div>
+                        </div>
+                        <div class="friend">
+                            <div class="friend-avatar">RK</div>
+                            <div class="friend-info">
+                                <h4>Rachel</h4>
+                                <p>All settled up</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2025 OweMe Inc. | Privacy Policy | Terms of Service
+        </footer>
+    </main>
+</body>
+</html>
