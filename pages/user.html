@@ -1,36 +1,293 @@
-<html>
-
-    <head>
-        <title>OweMe</title>
-
-    </head>
-    <body>
-        <script type="module">
-            // Import the functions you need from the SDKs you need
-            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-            import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
-            // TODO: Add SDKs for Firebase products that you want to use
-            // https://firebase.google.com/docs/web/setup#available-libraries
-          
-            // Your web app's Firebase configuration
-            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-            const firebaseConfig = {
-              apiKey: "AIzaSyBeaarnFcaKixmDVh9bvZAmRXLrrWnownc",
-              authDomain: "oweme-49aaf.firebaseapp.com",
-              projectId: "oweme-49aaf",
-              storageBucket: "oweme-49aaf.firebasestorage.app",
-              messagingSenderId: "651082383513",
-              appId: "1:651082383513:web:096f53e25440eb292f7808",
-              measurementId: "G-EK49BWV9Z2"
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OweMe - Your Profile</title>
+    <link rel="stylesheet" href="../styles/user.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">OweMe</div>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Settings</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <div class="balance-card">
+            <h2 class="balance-title">Your Total Balance</h2>
+            <div id="total-balance" class="balance-amount positive">$0.00</div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" data-tab="tab-owed-to-me">They Owe You</button>
+            <button class="tab-button" data-tab="tab-you-owe">You Owe Them</button>
+        </div>
+        
+        <div class="tab-content">
+            <div id="tab-owed-to-me" class="tab-panel active">
+                <div id="owed-to-me-list" class="debt-list">
+                </div>
+                <button id="add-they-owe-btn" class="add-debt-button">+ Add Money Owed To You</button>
+            </div>
+            
+            <div id="tab-you-owe" class="tab-panel">
+                <div id="you-owe-list" class="debt-list">
+                </div>
+                <button id="add-you-owe-btn" class="add-debt-button">+ Add Money You Owe</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Debt Modal -->
+    <div id="add-debt-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">Add New Debt</h3>
+                <button class="close-button">&times;</button>
+            </div>
+            <form id="add-debt-form">
+                <input type="hidden" id="debt-type" value="owed-to-me">
+                <div class="form-group">
+                    <label for="friend-name">Friend's Name</label>
+                    <input type="text" id="friend-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="debt-reason">Reason</label>
+                    <input type="text" id="debt-reason" required>
+                </div>
+                <div class="form-group">
+                    <label for="debt-amount">Amount ($)</label>
+                    <input type="number" id="debt-amount" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn cancel-button">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // Data structure
+        let debts = {
+            owedToMe: [],
+            youOwe: []
+        };
+        
+        // Elements
+        const totalBalanceEl = document.getElementById('total-balance');
+        const balanceMessageEl = document.getElementById('balance-message');
+        const owedToMeListEl = document.getElementById('owed-to-me-list');
+        const youOweListEl = document.getElementById('you-owe-list');
+        const addTheyOweBtn = document.getElementById('add-they-owe-btn');
+        const addYouOweBtn = document.getElementById('add-you-owe-btn');
+        const modal = document.getElementById('add-debt-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const debtTypeInput = document.getElementById('debt-type');
+        const addDebtForm = document.getElementById('add-debt-form');
+        const closeButton = document.querySelector('.close-button');
+        const cancelButton = document.querySelector('.cancel-button');
+        
+        // Tab switching functionality
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and panels
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanels.forEach(panel => panel.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding panel
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('friendTabDebts');
+            if (savedData) {
+                debts = JSON.parse(savedData);
+                renderDebts();
+                updateTotalBalance();
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('friendTabDebts', JSON.stringify(debts));
+        }
+        
+        // Calculate and update total balance
+        function updateTotalBalance() {
+            let total = 0;
+            
+            // Add all money owed to me
+            debts.owedToMe.forEach(debt => {
+                total += parseFloat(debt.amount);
+            });
+            
+            // Subtract all money I owe
+            debts.youOwe.forEach(debt => {
+                total -= parseFloat(debt.amount);
+            });
+            
+            // Update UI
+            if (total == 0){
+              totalBalanceEl.textContent = `-0.00`;
+              totalBalanceEl.className = 'balance-amount neutral';
+            }
+            else{
+            totalBalanceEl.textContent = total >= 0 ? `+$${Math.abs(total).toFixed(2)}` : `-$${Math.abs(total).toFixed(2)}`;
+            totalBalanceEl.className = 'balance-amount ' + (total >= 0 ? 'positive' : 'negative');
+            }
+        }
+        
+        // Generate initial for avatar
+        function getInitials(name) {
+            return name.split(' ').map(part => part.charAt(0).toUpperCase()).join('').slice(0, 2);
+        }
+        
+        // Render debts in their respective lists
+        function renderDebts() {
+            // Render "Owed To Me" list
+            if (debts.owedToMe.length === 0) {
+                owedToMeListEl.innerHTML = '<div class="no-debts">No one owes you money... yet!</div>';
+            } else {
+                owedToMeListEl.innerHTML = '';
+                debts.owedToMe.forEach((debt, index) => {
+                    const debtItem = document.createElement('div');
+                    debtItem.className = 'debt-item';
+                    debtItem.innerHTML = `
+                        <div class="friend-info">
+                            <div class="friend-avatar">${getInitials(debt.friendName)}</div>
+                            <div>
+                                <div class="friend-name">${debt.friendName}</div>
+                                <div class="debt-reason">${debt.reason}</div>
+                            </div>
+                        </div>
+                        <div class="debt-amount positive">+$${parseFloat(debt.amount).toFixed(2)}</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" data-action="remind" data-type="owedToMe" data-index="${index}">Remind</button>
+                            <button class="btn btn-accent" data-action="settle" data-type="owedToMe" data-index="${index}">Settle</button>
+                        </div>
+                    `;
+                    owedToMeListEl.appendChild(debtItem);
+                });
+            }
+            
+            // Render "You Owe" list
+            if (debts.youOwe.length === 0) {
+                youOweListEl.innerHTML = '<div class="no-debts">You don\'t owe anyone money... for now!</div>';
+            } else {
+                youOweListEl.innerHTML = '';
+                debts.youOwe.forEach((debt, index) => {
+                    const debtItem = document.createElement('div');
+                    debtItem.className = 'debt-item';
+                    debtItem.innerHTML = `
+                        <div class="friend-info">
+                            <div class="friend-avatar">${getInitials(debt.friendName)}</div>
+                            <div>
+                                <div class="friend-name">${debt.friendName}</div>
+                                <div class="debt-reason">${debt.reason}</div>
+                            </div>
+                        </div>
+                        <div class="debt-amount negative">-$${parseFloat(debt.amount).toFixed(2)}</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-accent" data-action="pay" data-type="youOwe" data-index="${index}">Pay Now</button>
+                        </div>
+                    `;
+                    youOweListEl.appendChild(debtItem);
+                });
+            }
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('[data-action]').forEach(button => {
+                button.addEventListener('click', handleActionClick);
+            });
+        }
+        
+        // Handle action button clicks (remind, settle, pay)
+        function handleActionClick(e) {
+            const action = e.target.getAttribute('data-action');
+            const type = e.target.getAttribute('data-type');
+            const index = parseInt(e.target.getAttribute('data-index'));
+            
+            if (action === 'settle' || action === 'pay') {
+                // Remove the debt
+                debts[type].splice(index, 1);
+                saveData();
+                renderDebts();
+                updateTotalBalance();
+            } else if (action === 'remind') {
+                // Just a simple alert for demonstration
+                const debt = debts[type][index];
+                alert(`Reminder sent to ${debt.friendName} for $${debt.amount}`);
+            }
+        }
+        
+        // Show modal to add new debt
+        function showAddDebtModal(type) {
+            debtTypeInput.value = type;
+            modalTitle.textContent = type === 'owedToMe' ? 'Add Money Owed To You' : 'Add Money You Owe';
+            modal.classList.add('active');
+        }
+        
+        // Close modal
+        function closeModal() {
+            modal.classList.remove('active');
+            addDebtForm.reset();
+        }
+        
+        // Add new debt
+        function addDebt(e) {
+            e.preventDefault();
+            
+            const type = debtTypeInput.value;
+            const friendName = document.getElementById('friend-name').value;
+            const reason = document.getElementById('debt-reason').value;
+            const amount = document.getElementById('debt-amount').value;
+            
+            // Create new debt object
+            const newDebt = {
+                friendName,
+                reason,
+                amount,
+                date: new Date().toISOString()
             };
-          
-            // Initialize Firebase
-            const app = initializeApp(firebaseConfig);
-            const analytics = getAnalytics(app);
-          </script>
-          
-    </body>
-
-
-
+            
+            // Add to appropriate list
+            debts[type].push(newDebt);
+            
+            // Save, update UI and close modal
+            saveData();
+            renderDebts();
+            updateTotalBalance();
+            closeModal();
+        }
+        
+        // Event Listeners
+        addTheyOweBtn.addEventListener('click', () => showAddDebtModal('owedToMe'));
+        addYouOweBtn.addEventListener('click', () => showAddDebtModal('youOwe'));
+        closeButton.addEventListener('click', closeModal);
+        cancelButton.addEventListener('click', closeModal);
+        addDebtForm.addEventListener('submit', addDebt);
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+        
+        // Initialize
+        loadData();
+    </script>
+</body>
 </html>
