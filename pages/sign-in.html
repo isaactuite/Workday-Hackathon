@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - OweMe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #07001b;
+        }
+
+        .text {
+            font-size: 16px;
+            font-family: Helvetica;
+        }
+
+        main {
+            background-color: rgb(20, 0, 53);
+            width: 60vw;
+            min-height: 100vh;
+            color: white;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        header {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            text-align: center;
+        }
+
+        .logo span {
+            color: #4ae;
+        }
+
+        .signin-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .signin-container h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 4px;
+            border: none;
+            font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input:focus {
+            border: 2px solid rgb(95, 20, 113);
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .remember-me input {
+            margin-right: 0.5rem;
+        }
+
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+
+        .forgot-password a {
+            color: #4ae;
+            text-decoration: none;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            width: 100%;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: rgb(159, 52, 212);
+            color: rgb(255, 255, 255);
+        }
+
+        .btn-primary:hover {
+            background-color: rgb(159, 52, 212);
+            transform: translateY(-2px);
+        }
+
+        .social-signin {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .social-signin p {
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            padding: 0.8rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            width: 120px;
+        }
+
+        .social-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .signup-option {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .signup-option a {
+            color: #4ae;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup-option a:hover {
+            text-decoration: underline;
+        }
+
+        .go-back {
+            position: absolute;
+            top: 2rem;
+            left: 22vw;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .go-back:hover {
+            text-decoration: underline;
+        }
+
+        .back-arrow {
+            margin-right: 0.5rem;
+        }
+
+        footer {
+            margin-top: auto;
+            width: 100%;
+            text-align: center;
+            padding-top: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 900px) {
+            main {
+                width: 90vw;
+            }
+            
+            .go-back {
+                left: 7vw;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <main>
+        <a href="../index.html" class="go-back"><span class="back-arrow">←</span> Back to Home</a>
+        
+        <header>
+            <div class="logo">Owe<span>Me</span></div>
+        </header>
+
+        <div class="signin-container">
+            <h2>Sign In</h2>
+            <form>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                
+                <div class="remember-me">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Remember me</label>
+                </div>
+                
+                <div class="forgot-password">
+                    <a href="#">Forgot password?</a>
+                </div>
+                
+                <a href="user.html"><button type="submit" class="btn btn-primary">Sign In</button></a>
+            </form>
+            
+            <div class="social-signin">
+                <p>Or sign in with</p>
+                <div class="social-buttons">
+                    <button class="social-btn">Google</button>
+                    <button class="social-btn">Facebook</button>
+                </div>
+            </div>
+            
+            <div class="signup-option">
+                <p>Don't have an account? <a href="#">Sign Up</a></p>
+            </div>
+        </div>
+
+        <footer>
+            &copy; 2025 OweMe Inc. | Privacy Policy | Terms of Service
+        </footer>
+    </main>
+</body>
+</html>
