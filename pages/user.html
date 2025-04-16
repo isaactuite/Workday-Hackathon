@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OweMe - Your Profile</title>
     <link rel="stylesheet" href="../styles/user.css">
+    <!-- CSS would go here but is omitted as requested -->
 </head>
 <body>
     <nav class="navbar">
@@ -18,41 +19,67 @@
     
     <div class="container">
         <div class="balance-card">
-            <h2 class="balance-title">Your Total Balance</h2>
-            <div id="total-balance" class="balance-amount positive">$0.00</div>
+            <div class="balance-box">
+                <h2 class="balance-title">Total</h2>
+                <div id="total-debt" class="balance-amount negative">€0.00</div>
+            </div>
+            <div class="balance-box">
+                <h2 class="score-title">Reliability Score</h2>
+                <div id="reliability-score" class="score-amount reliability-high">100</div>
+            </div>
         </div>
         
-        <div class="tabs">
-            <button class="tab-button active" data-tab="tab-owed-to-me">They Owe You</button>
-            <button class="tab-button" data-tab="tab-you-owe">You Owe Them</button>
+        <div class="stats-section">
+            <h2>Repayment Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div id="on-time-payments" class="stat-value">0</div>
+                    <div class="stat-label">On-Time Payments</div>
+                </div>
+                <div class="stat-box">
+                    <div id="late-payments" class="stat-value">0</div>
+                    <div class="stat-label">Late Payments</div>
+                </div>
+                <div class="stat-box">
+                    <div id="avg-days" class="stat-value">0</div>
+                    <div class="stat-label">Avg. Days to Pay</div>
+                </div>
+                <div class="stat-box">
+                    <div id="current-loans" class="stat-value">0</div>
+                    <div class="stat-label">Current Debts</div>
+                </div>
+            </div>
         </div>
         
-        <div class="tab-content">
-            <div id="tab-owed-to-me" class="tab-panel active">
-                <div id="owed-to-me-list" class="debt-list">
-                </div>
-                <button id="add-they-owe-btn" class="add-debt-button">+ Add Money Owed To You</button>
+        <!-- Money you owe to others -->
+        <div id="debts-container">
+            <h2>Money You Owe</h2>
+            <div id="you-owe-list" class="debt-list">
+                <div class="no-debts">You don't owe anyone money... yet!</div>
             </div>
-            
-            <div id="tab-you-owe" class="tab-panel">
-                <div id="you-owe-list" class="debt-list">
-                </div>
-                <button id="add-you-owe-btn" class="add-debt-button">+ Add Money You Owe</button>
+            <button id="add-debt-btn" class="add-debt-button">+ Add New Debt</button>
+        </div>
+        
+        <!-- Money owed to you by others -->
+        <div id="credits-container">
+            <h2>Money Owed To You</h2>
+            <div id="owed-to-you-list" class="debt-list">
+                <div class="no-debts">No one owes you money... yet!</div>
             </div>
+            <button id="add-credit-btn" class="add-debt-button">+ Add Money Owed To You</button>
         </div>
     </div>
     
-    <!-- Add Debt Modal -->
+    <!-- Add Debt Modal (Money you owe) -->
     <div id="add-debt-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">Add New Debt</h3>
+                <h3 class="modal-title">Add New Debt</h3>
                 <button class="close-button">&times;</button>
             </div>
             <form id="add-debt-form">
-                <input type="hidden" id="debt-type" value="owed-to-me">
                 <div class="form-group">
-                    <label for="friend-name">Friend's Name</label>
+                    <label for="friend-name">Lender's Name</label>
                     <input type="text" id="friend-name" required>
                 </div>
                 <div class="form-group">
@@ -60,8 +87,80 @@
                     <input type="text" id="debt-reason" required>
                 </div>
                 <div class="form-group">
-                    <label for="debt-amount">Amount ($)</label>
+                    <label for="debt-amount">Amount (€)</label>
                     <input type="number" id="debt-amount" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Repayment Time</label>
+                    <div class="time-icons">
+                        <div class="time-option" data-days="7">
+                            <i class="time-icon">1W</i>
+                            <span>1 Week</span>
+                        </div>
+                        <div class="time-option" data-days="14">
+                            <i class="time-icon">2W</i>
+                            <span>2 Weeks</span>
+                        </div>
+                        <div class="time-option" data-days="30">
+                            <i class="time-icon">1M</i>
+                            <span>1 Month</span>
+                        </div>
+                        <div class="time-option" data-days="90">
+                            <i class="time-icon">3M</i>
+                            <span>3 Months</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="selected-days" value="14" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn cancel-button">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Add Credit Modal (Money owed to you) -->
+    <div id="add-credit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add Money Owed To You</h3>
+                <button class="close-button">&times;</button>
+            </div>
+            <form id="add-credit-form">
+                <div class="form-group">
+                    <label for="borrower-name">Borrower's Name</label>
+                    <input type="text" id="borrower-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="credit-reason">Reason</label>
+                    <input type="text" id="credit-reason" required>
+                </div>
+                <div class="form-group">
+                    <label for="credit-amount">Amount ($)</label>
+                    <input type="number" id="credit-amount" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>Expected Repayment Time</label>
+                    <div class="time-icons">
+                        <div class="time-option" data-days="7">
+                            <i class="time-icon">1W</i>
+                            <span>1 Week</span>
+                        </div>
+                        <div class="time-option" data-days="14">
+                            <i class="time-icon">2W</i>
+                            <span>2 Weeks</span>
+                        </div>
+                        <div class="time-option" data-days="30">
+                            <i class="time-icon">1M</i>
+                            <span>1 Month</span>
+                        </div>
+                        <div class="time-option" data-days="90">
+                            <i class="time-icon">3M</i>
+                            <span>3 Months</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="credit-selected-days" value="14" required>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn cancel-button">Cancel</button>
@@ -73,80 +172,119 @@
     
     <script>
         // Data structure
-        let debts = {
-            owedToMe: [],
-            youOwe: []
+        let userData = {
+            debts: [], // Money you owe to others
+            credits: [], // Money others owe to you
+            stats: {
+                onTimePayments: 0,
+                latePayments: 0,
+                totalDaysToPayment: 0,
+                totalPayments: 0
+            }
         };
         
         // Elements
-        const totalBalanceEl = document.getElementById('total-balance');
-        const balanceMessageEl = document.getElementById('balance-message');
-        const owedToMeListEl = document.getElementById('owed-to-me-list');
+        const totalDebtEl = document.getElementById('total-debt');
+        const totalCreditEl = document.getElementById('total-credit');
+        const reliabilityScoreEl = document.getElementById('reliability-score');
         const youOweListEl = document.getElementById('you-owe-list');
-        const addTheyOweBtn = document.getElementById('add-they-owe-btn');
-        const addYouOweBtn = document.getElementById('add-you-owe-btn');
-        const modal = document.getElementById('add-debt-modal');
-        const modalTitle = document.getElementById('modal-title');
-        const debtTypeInput = document.getElementById('debt-type');
+        const owedToYouListEl = document.getElementById('owed-to-you-list');
+        const addDebtBtn = document.getElementById('add-debt-btn');
+        const addCreditBtn = document.getElementById('add-credit-btn');
+        const debtModal = document.getElementById('add-debt-modal');
+        const creditModal = document.getElementById('add-credit-modal');
         const addDebtForm = document.getElementById('add-debt-form');
-        const closeButton = document.querySelector('.close-button');
-        const cancelButton = document.querySelector('.cancel-button');
+        const addCreditForm = document.getElementById('add-credit-form');
         
-        // Tab switching functionality
-        const tabButtons = document.querySelectorAll('.tab-button');
-        const tabPanels = document.querySelectorAll('.tab-panel');
-        
-        tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Remove active class from all buttons and panels
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabPanels.forEach(panel => panel.classList.remove('active'));
-                
-                // Add active class to clicked button and corresponding panel
-                button.classList.add('active');
-                const tabId = button.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
-            });
-        });
+        // Stats elements
+        const onTimePaymentsEl = document.getElementById('on-time-payments');
+        const latePaymentsEl = document.getElementById('late-payments');
+        const avgDaysEl = document.getElementById('avg-days');
+        const currentLoansEl = document.getElementById('current-loans');
         
         // Load data from localStorage
         function loadData() {
-            const savedData = localStorage.getItem('friendTabDebts');
+            const savedData = localStorage.getItem('oweMeData');
             if (savedData) {
-                debts = JSON.parse(savedData);
+                userData = JSON.parse(savedData);
                 renderDebts();
-                updateTotalBalance();
+                renderCredits();
+                updateStats();
             }
         }
         
         // Save data to localStorage
         function saveData() {
-            localStorage.setItem('friendTabDebts', JSON.stringify(debts));
+            localStorage.setItem('oweMeData', JSON.stringify(userData));
         }
         
-        // Calculate and update total balance
-        function updateTotalBalance() {
-            let total = 0;
+        // Calculate and update total balances
+        function updateTotalBalances() {
+            let totalDebt = 0;
+            let totalCredit = 0;
             
-            // Add all money owed to me
-            debts.owedToMe.forEach(debt => {
-                total += parseFloat(debt.amount);
+            // Calculate total debt (money you owe)
+            userData.debts.forEach(debt => {
+                totalDebt -= parseFloat(debt.amount);
             });
             
-            // Subtract all money I owe
-            debts.youOwe.forEach(debt => {
-                total -= parseFloat(debt.amount);
+            // Calculate total credit (money owed to you)
+            userData.credits.forEach(credit => {
+                totalCredit += parseFloat(credit.amount);
             });
+            
+            totalDebt += totalCredit;
+
+            // Update UI
+            totalDebtEl.textContent = totalDebt === 0 ? '€0.00' : `€${totalDebt.toFixed(2)}`;
+            currentLoansEl.textContent = userData.debts.length;
+        }
+        
+        // Calculate reliability score
+        function calculateReliabilityScore() {
+            // Start with a perfect score
+            let score = 100;
+            
+            // If there have been payments
+            if (userData.stats.totalPayments > 0) {
+                // Deduct points for late payments
+                const latePaymentPenalty = userData.stats.latePayments * 5;
+                
+                // Average days to payment penalty (1 point per 2 days on average)
+                const avgDays = userData.stats.totalPayments > 0 ? 
+                    Math.round(userData.stats.totalDaysToPayment / userData.stats.totalPayments) : 0;
+                const avgDaysPenalty = Math.floor(avgDays / 2);
+                
+                // Calculate final score
+                score = Math.max(0, score - latePaymentPenalty - avgDaysPenalty);
+            }
             
             // Update UI
-            if (total == 0){
-              totalBalanceEl.textContent = `-0.00`;
-              totalBalanceEl.className = 'balance-amount neutral';
+            reliabilityScoreEl.textContent = score;
+            
+            // Update color based on score
+            if (score >= 80) {
+                reliabilityScoreEl.className = 'score-amount reliability-high';
+            } else if (score >= 50) {
+                reliabilityScoreEl.className = 'score-amount reliability-medium';
+            } else {
+                reliabilityScoreEl.className = 'score-amount reliability-low';
             }
-            else{
-            totalBalanceEl.textContent = total >= 0 ? `+$${Math.abs(total).toFixed(2)}` : `-$${Math.abs(total).toFixed(2)}`;
-            totalBalanceEl.className = 'balance-amount ' + (total >= 0 ? 'positive' : 'negative');
-            }
+            
+            return score;
+        }
+        
+        // Update statistics
+        function updateStats() {
+            onTimePaymentsEl.textContent = userData.stats.onTimePayments;
+            latePaymentsEl.textContent = userData.stats.latePayments;
+            
+            const avgDays = userData.stats.totalPayments > 0 ? 
+                Math.round(userData.stats.totalDaysToPayment / userData.stats.totalPayments) : 0;
+            avgDaysEl.textContent = avgDays;
+            
+            updateTotalBalances();
+            calculateReliabilityScore();
         }
         
         // Generate initial for avatar
@@ -154,53 +292,48 @@
             return name.split(' ').map(part => part.charAt(0).toUpperCase()).join('').slice(0, 2);
         }
         
-        // Render debts in their respective lists
-        function renderDebts() {
-            // Render "Owed To Me" list
-            if (debts.owedToMe.length === 0) {
-                owedToMeListEl.innerHTML = '<div class="no-debts">No one owes you money... yet!</div>';
-            } else {
-                owedToMeListEl.innerHTML = '';
-                debts.owedToMe.forEach((debt, index) => {
-                    const debtItem = document.createElement('div');
-                    debtItem.className = 'debt-item';
-                    debtItem.innerHTML = `
-                        <div class="friend-info">
-                            <div class="friend-avatar">${getInitials(debt.friendName)}</div>
-                            <div>
-                                <div class="friend-name">${debt.friendName}</div>
-                                <div class="debt-reason">${debt.reason}</div>
-                            </div>
-                        </div>
-                        <div class="debt-amount positive">+$${parseFloat(debt.amount).toFixed(2)}</div>
-                        <div class="action-buttons">
-                            <button class="btn btn-primary" data-action="remind" data-type="owedToMe" data-index="${index}">Remind</button>
-                            <button class="btn btn-accent" data-action="settle" data-type="owedToMe" data-index="${index}">Settle</button>
-                        </div>
-                    `;
-                    owedToMeListEl.appendChild(debtItem);
-                });
-            }
+        // Format date for display
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+        
+        // Calculate days between two dates
+        function daysBetween(date1, date2) {
+            const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+            const firstDate = new Date(date1);
+            const secondDate = new Date(date2);
             
-            // Render "You Owe" list
-            if (debts.youOwe.length === 0) {
-                youOweListEl.innerHTML = '<div class="no-debts">You don\'t owe anyone money... for now!</div>';
+            return Math.round(Math.abs((firstDate - secondDate) / oneDay));
+        }
+        
+        // Render debts in the list (money you owe)
+        function renderDebts() {
+            if (userData.debts.length === 0) {
+                youOweListEl.innerHTML = '<div class="no-debts">You don\'t owe anyone money... yet!</div>';
             } else {
                 youOweListEl.innerHTML = '';
-                debts.youOwe.forEach((debt, index) => {
+                userData.debts.forEach((debt, index) => {
                     const debtItem = document.createElement('div');
                     debtItem.className = 'debt-item';
+                    
+                    // Check if the debt is overdue
+                    const dueDate = new Date(debt.dueDate);
+                    const today = new Date();
+                    const isOverdue = today > dueDate;
+                    
                     debtItem.innerHTML = `
                         <div class="friend-info">
                             <div class="friend-avatar">${getInitials(debt.friendName)}</div>
                             <div>
                                 <div class="friend-name">${debt.friendName}</div>
                                 <div class="debt-reason">${debt.reason}</div>
+                                <div class="debt-date">Due: ${formatDate(debt.dueDate)} ${isOverdue ? '<span style="color:red">(Overdue)</span>' : ''}</div>
                             </div>
                         </div>
-                        <div class="debt-amount negative">-$${parseFloat(debt.amount).toFixed(2)}</div>
+                        <div class="debt-amount negative">€${parseFloat(debt.amount).toFixed(2)}</div>
                         <div class="action-buttons">
-                            <button class="btn btn-accent" data-action="pay" data-type="youOwe" data-index="${index}">Pay Now</button>
+                            <button class="btn btn-accent" data-action="pay" data-index="${index}">Pay Now</button>
                         </div>
                     `;
                     youOweListEl.appendChild(debtItem);
@@ -208,81 +341,269 @@
             }
             
             // Add event listeners to action buttons
-            document.querySelectorAll('[data-action]').forEach(button => {
-                button.addEventListener('click', handleActionClick);
+            document.querySelectorAll('[data-action="pay"]').forEach(button => {
+                button.addEventListener('click', handleDebtActionClick);
             });
         }
         
-        // Handle action button clicks (remind, settle, pay)
-        function handleActionClick(e) {
+        // Render credits in the list (money owed to you)
+        function renderCredits() {
+            if (userData.credits.length === 0) {
+                owedToYouListEl.innerHTML = '<div class="no-debts">No one owes you money... yet!</div>';
+            } else {
+                owedToYouListEl.innerHTML = '';
+                userData.credits.forEach((credit, index) => {
+                    const creditItem = document.createElement('div');
+                    creditItem.className = 'debt-item';
+                    
+                    // Check if the credit is overdue
+                    const dueDate = new Date(credit.dueDate);
+                    const today = new Date();
+                    const isOverdue = today > dueDate;
+                    
+                    creditItem.innerHTML = `
+                        <div class="friend-info">
+                            <div class="friend-avatar">${getInitials(credit.borrowerName)}</div>
+                            <div>
+                                <div class="friend-name">${credit.borrowerName}</div>
+                                <div class="debt-reason">${credit.reason}</div>
+                                <div class="debt-date">Expected: ${formatDate(credit.dueDate)} ${isOverdue ? '<span style="color:red">(Overdue)</span>' : ''}</div>
+                            </div>
+                        </div>
+                        <div class="debt-amount positive">€${parseFloat(credit.amount).toFixed(2)}</div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" data-action="received" data-index="${index}">Mark Received</button>
+                            <button class="btn btn-accent" data-action="remind" data-index="${index}">Remind</button>
+                        </div>
+                    `;
+                    owedToYouListEl.appendChild(creditItem);
+                });
+            }
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('[data-action="received"], [data-action="remind"]').forEach(button => {
+                button.addEventListener('click', handleCreditActionClick);
+            });
+        }
+        
+        // Handle debt action button clicks (pay)
+        function handleDebtActionClick(e) {
             const action = e.target.getAttribute('data-action');
-            const type = e.target.getAttribute('data-type');
             const index = parseInt(e.target.getAttribute('data-index'));
             
-            if (action === 'settle' || action === 'pay') {
+            if (action === 'pay') {
+                // Get the debt
+                const debt = userData.debts[index];
+                
+                // Calculate if payment is on time or late
+                const dueDate = new Date(debt.dueDate);
+                const paymentDate = new Date();
+                const isOnTime = paymentDate <= dueDate;
+                
+                // Update statistics
+                if (isOnTime) {
+                    userData.stats.onTimePayments++;
+                } else {
+                    userData.stats.latePayments++;
+                }
+                
+                // Calculate days from creation to payment
+                const daysToPayment = daysBetween(debt.date, paymentDate);
+                userData.stats.totalDaysToPayment += daysToPayment;
+                userData.stats.totalPayments++;
+                
                 // Remove the debt
-                debts[type].splice(index, 1);
+                userData.debts.splice(index, 1);
+                
+                // Save and update UI
                 saveData();
                 renderDebts();
-                updateTotalBalance();
-            } else if (action === 'remind') {
-                // Just a simple alert for demonstration
-                const debt = debts[type][index];
-                alert(`Reminder sent to ${debt.friendName} for $${debt.amount}`);
+                updateStats();
             }
         }
         
-        // Show modal to add new debt
-        function showAddDebtModal(type) {
-            debtTypeInput.value = type;
-            modalTitle.textContent = type === 'owedToMe' ? 'Add Money Owed To You' : 'Add Money You Owe';
-            modal.classList.add('active');
+        // Handle credit action button clicks (received or remind)
+        function handleCreditActionClick(e) {
+            const action = e.target.getAttribute('data-action');
+            const index = parseInt(e.target.getAttribute('data-index'));
+            
+            if (action === 'received') {
+                // Remove the credit
+                userData.credits.splice(index, 1);
+                
+                // Save and update UI
+                saveData();
+                renderCredits();
+                updateStats();
+            } else if (action === 'remind') {
+                // In a real app, this would send a reminder
+                alert(`Reminder sent to ${userData.credits[index].borrowerName}!`);
+            }
         }
         
-        // Close modal
-        function closeModal() {
-            modal.classList.remove('active');
+        // Time option selection for debt
+        document.addEventListener('DOMContentLoaded', function() {
+            const timeOptions = document.querySelectorAll('#add-debt-form .time-option');
+            const selectedDaysInput = document.getElementById('selected-days');
+            
+            timeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all options
+                    timeOptions.forEach(opt => opt.classList.remove('active'));
+                    
+                    // Add active class to selected option
+                    this.classList.add('active');
+                    
+                    // Update hidden input value
+                    selectedDaysInput.value = this.getAttribute('data-days');
+                });
+            });
+            
+            // Set default selection
+            timeOptions[1].classList.add('active'); // Default: 2 weeks
+        });
+        
+        // Time option selection for credit
+        document.addEventListener('DOMContentLoaded', function() {
+            const timeOptions = document.querySelectorAll('#add-credit-form .time-option');
+            const selectedDaysInput = document.getElementById('credit-selected-days');
+            
+            timeOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove active class from all options
+                    timeOptions.forEach(opt => opt.classList.remove('active'));
+                    
+                    // Add active class to selected option
+                    this.classList.add('active');
+                    
+                    // Update hidden input value
+                    selectedDaysInput.value = this.getAttribute('data-days');
+                });
+            });
+            
+            // Set default selection
+            timeOptions[1].classList.add('active'); // Default: 2 weeks
+        });
+        
+        // Show modal to add new debt
+        function showAddDebtModal() {
+            debtModal.classList.add('active');
+        }
+        
+        // Show modal to add new credit
+        function showAddCreditModal() {
+            creditModal.classList.add('active');
+        }
+        
+        // Close debt modal
+        function closeDebtModal() {
+            debtModal.classList.remove('active');
             addDebtForm.reset();
         }
         
-        // Add new debt
+        // Close credit modal
+        function closeCreditModal() {
+            creditModal.classList.remove('active');
+            addCreditForm.reset();
+        }
+        
+        // Add new debt (money you owe)
         function addDebt(e) {
             e.preventDefault();
             
-            const type = debtTypeInput.value;
             const friendName = document.getElementById('friend-name').value;
             const reason = document.getElementById('debt-reason').value;
             const amount = document.getElementById('debt-amount').value;
+            const selectedDays = parseInt(document.getElementById('selected-days').value);
+            
+            // Calculate due date
+            const today = new Date();
+            const dueDate = new Date(today);
+            dueDate.setDate(today.getDate() + selectedDays);
             
             // Create new debt object
             const newDebt = {
                 friendName,
                 reason,
                 amount,
-                date: new Date().toISOString()
+                date: today.toISOString(),
+                dueDate: dueDate.toISOString()
             };
             
-            // Add to appropriate list
-            debts[type].push(newDebt);
+            // Add to debts
+            userData.debts.push(newDebt);
             
             // Save, update UI and close modal
             saveData();
             renderDebts();
-            updateTotalBalance();
-            closeModal();
+            updateStats();
+            closeDebtModal();
+        }
+        
+        // Add new credit (money owed to you)
+        function addCredit(e) {
+            e.preventDefault();
+            
+            const borrowerName = document.getElementById('borrower-name').value;
+            const reason = document.getElementById('credit-reason').value;
+            const amount = document.getElementById('credit-amount').value;
+            const selectedDays = parseInt(document.getElementById('credit-selected-days').value);
+            
+            // Calculate due date
+            const today = new Date();
+            const dueDate = new Date(today);
+            dueDate.setDate(today.getDate() + selectedDays);
+            
+            // Create new credit object
+            const newCredit = {
+                borrowerName,
+                reason,
+                amount,
+                date: today.toISOString(),
+                dueDate: dueDate.toISOString()
+            };
+            
+            // Add to credits
+            userData.credits.push(newCredit);
+            
+            // Save, update UI and close modal
+            saveData();
+            renderCredits();
+            updateStats();
+            closeCreditModal();
         }
         
         // Event Listeners
-        addTheyOweBtn.addEventListener('click', () => showAddDebtModal('owedToMe'));
-        addYouOweBtn.addEventListener('click', () => showAddDebtModal('youOwe'));
-        closeButton.addEventListener('click', closeModal);
-        cancelButton.addEventListener('click', closeModal);
-        addDebtForm.addEventListener('submit', addDebt);
+        addDebtBtn.addEventListener('click', showAddDebtModal);
+        addCreditBtn.addEventListener('click', showAddCreditModal);
         
-        // Close modal when clicking outside
+        // Close modal buttons
+        document.querySelectorAll('.close-button').forEach(button => {
+            button.addEventListener('click', function() {
+                closeDebtModal();
+                closeCreditModal();
+            });
+        });
+        
+        // Cancel buttons
+        document.querySelectorAll('.cancel-button').forEach(button => {
+            button.addEventListener('click', function() {
+                closeDebtModal();
+                closeCreditModal();
+            });
+        });
+        
+        // Form submissions
+        addDebtForm.addEventListener('submit', addDebt);
+        addCreditForm.addEventListener('submit', addCredit);
+        
+        // Close modals when clicking outside
         window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeModal();
+            if (e.target === debtModal) {
+                closeDebtModal();
+            }
+            if (e.target === creditModal) {
+                closeCreditModal();
             }
         });
         
