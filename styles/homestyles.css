@@ -10,7 +10,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f5f5f5;
+    background-color: #07001b;
 }
 
 .text {
@@ -19,7 +19,7 @@ body {
 }
 
 main {
-    background-color: navy;
+    background-color: rgb(20, 0, 53);
     width: 60vw;
     min-height: 100vh;
     color: white;
@@ -65,22 +65,20 @@ header {
 
 .btn-outline {
     background-color: transparent;
-    border: 2px solid #4ae;
-    color: #4ae;
+    border: 2px solid rgb(95, 20, 113);
+    color: rgb(48, 18, 183);
 }
 
 .btn-outline:hover {
-    background-color: #4ae;
-    color: navy;
+    background-color: rgb(79, 31, 210);
 }
 
 .btn-primary {
-    background-color: #4ae;
-    color: navy;
+    background-color: rgb(159, 52, 212);
 }
 
 .btn-primary:hover {
-    background-color: #5bf;
+    background-color: rgb(159, 52, 212);
     transform: translateY(-2px);
 }
 
